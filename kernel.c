@@ -41,14 +41,31 @@ void printString(char* ch)
 
 void readString(char* ch)
 {
-  /*char* ch;*/
-  int i = 0;
-  do{
-    ch[i] = interrupt(22,0,0,0,0);
-    i = i + 1;
-  } while(ch[i -1] != 13);
-
-  ch[i - 1] = 0x0;
+  int i;
+  char al;
+  char ah;
+  int ax;
+  ch[i] = '0';
+  i = 0;
+  do
+    {
+      ch[i] = interrupt(22,0,0,0,0);
+      if(ch[i] == '\b')
+	{
+	  al = '\b';
+	  ah = 14;
+	  ax = ah * 256 + al;
+	  interrupt(16,ax,0,0,0);
+	  if(i > 0)
+	    i--;
+	}
+      al = ch[i];
+      ah = 14;
+      ax = ah * 256 + al;
+      interrupt(16,ax,0,0,0);
+      i++;
+    }while(ch[i-1] != 13);
+  ch[i] = '\0';
 }
 
 int mod(int a, int b)
