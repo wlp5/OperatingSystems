@@ -52,18 +52,18 @@ void readString(char* ch)
       ch[i] = interrupt(22,0,0,0,0);
       if(ch[i] == '\b')
 	{
-	  al = '\b';
-	  ah = 14;
-	  ax = ah * 256 + al;
-	  interrupt(16,ax,0,0,0);
+	  printString("\b \b");
 	  if(i > 0)
 	    i--;
 	}
-      al = ch[i];
-      ah = 14;
-      ax = ah * 256 + al;
-      interrupt(16,ax,0,0,0);
-      i++;
+      else
+	{
+	  al = ch[i];
+	  ah = 14;
+	  ax = ah * 256 + al;
+	  interrupt(16,ax,0,0,0);
+	  i++;
+	}
     }while(ch[i-1] != 13);
   ch[i] = '\0';
 }
