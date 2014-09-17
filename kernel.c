@@ -107,7 +107,8 @@ void readInt(int* x)
   readString(number);
   for(; number[i] != 0; i++)
   {
-    *x = (*x) * 10;
-    *x = number[i] - 48;
+    /**x = (*x) * 10;*/
+    *x = number[i] - '0';
   } 
+  printString("\r\n\0");
 }
