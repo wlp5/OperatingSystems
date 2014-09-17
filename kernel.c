@@ -10,7 +10,7 @@ void main()
   char line[80];
   int x;
 
-  
+  writeInt(0);
   printString("Enter a line: \0");
   readString(line);
   printString("\r\nYou typed: \0");
@@ -45,7 +45,6 @@ void readString(char* ch)
   char al;
   char ah;
   int ax;
-  ch[i] = '0';
   i = 0;
   do
     {
@@ -65,7 +64,7 @@ void readString(char* ch)
 	  i++;
 	}
     }while(ch[i-1] != 13);
-  ch[i] = '\0';
+  ch[i - 1] = '\0';
 }
 
 int mod(int a, int b)
@@ -108,7 +107,7 @@ void readInt(int* x)
   for(; number[i] != 0; i++)
   {
     *x = (*x) * 10;
-    *x = number[i] - '0';
+    *x = (*x) + number[i] - '0';
   } 
   printString("\r\n\0");
 }
