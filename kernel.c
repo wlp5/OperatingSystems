@@ -120,6 +120,5 @@ void handleInterrupt21(int ax, int bx, int cx, int dx)
   case 1: readString(bx); break;
   case 14: writeInt(bx); break;
   case 15: readInt(bx); break;
-  default: fprintf("error improper call\r\n\0"); break;
   }
 }
