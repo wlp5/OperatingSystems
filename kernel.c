@@ -11,6 +11,21 @@ void main()
   char line[80];
   int x;
 
+
+  makeInterrupt21();
+  interrupt(33,0,"Hello world\r\n\0",0,0);
+  interrupt(33,0,"\r\n\0",0,0);
+  interrupt(33,0,"Enter a line: \0",0,0);
+  interrupt(33,1,line,0,0);
+  interrupt(33,0,"\r\nYou wrote: \0",0,0);
+  interrupt(33,0,line,0,0);
+  interrupt(33,0,"\r\n\0",0,0);
+  interrupt(33,0,"Enter a number: \0",0,0);
+  interrupt(33,15,&x,0,0);
+  interrupt(33,0,"You entered \0",0,0);
+  interrupt(33,14,x,0,0);
+  interrupt(33,0,"\r\n\0",0,0);
+  /*
   writeInt(0);
   printString("Enter a line: \0");
   readString(line);
@@ -22,6 +37,7 @@ void main()
   printString("You Entered \0");
   writeInt(x);
   printString("\r\n\0");
+  */
   while(1);
 }
 
