@@ -4,6 +4,7 @@ int mod(int, int);
 int div(int, int);
 void writeInt(int);
 void readInt(int*);
+void handleInterrupt21(int,int,int,int);
 
 void main()
 {
@@ -110,4 +111,15 @@ void readInt(int* x)
     *x = (*x) + number[i] - '0';
   } 
   printString("\r\n\0");
+}
+
+void handleInterrupt21(int ax, int bx, int cx, int dx)
+{
+  switch(ax){
+  case 0: printString(bx); break;
+  case 1: readString(bx); break;
+  case 14: writeInt(bx); break;
+  case 15: readInt(bx); break;
+  default: fprintf("error improper call\r\n\0"); break;
+  }
 }
