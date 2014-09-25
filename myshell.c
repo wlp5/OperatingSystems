@@ -163,6 +163,7 @@ int parseCommand(char *cLine, struct command_t *cmd) {
    cmd->argc = argc-1;
    cmd->name = (char *) malloc(sizeof(cmd->argv[0]));
    strcpy(cmd->name, cmd->argv[0]);
+   cmd->argv[1] = NULL;
    return 1;
 }
 
