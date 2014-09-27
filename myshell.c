@@ -85,7 +85,31 @@ int main(int argc, char *argv[]) {
 	break;
       
       /* Create a child process to execute the command
-	 only if user hasnt exited the shell*/
+	 only if user hasnt exited the shell or
+	 called the help function*/
+      if(strcmp(command.name, "help") == 0){
+	printf("******************************************\n");
+	printf("Help Manual: Below are the list of commands supported\n");
+	printf("%-20s ", "cls");
+	prtinf("Clears the screen.\n");
+	printf("%-20s ", "copy FILE1 FILE2");
+	prtinf("Creates F2 and copies and bytes of F1 to F2 without deleting F1.\n");
+	printf("%-20s ", "del FILE");
+	prtinf("Deletes the named FILE");
+	printf("%-20s ", "dir");
+	prtinf("Lists the contents of the current directory.\n");
+	printf("%-20s ", "echo COMMENT");
+	prtinf("Echoes the COMMENT back onto the screen.\n");
+	printf("%-20s ", "exit");
+	prtinf("Quits the shell.\n");
+	printf("%-20s ", "make FILE");
+	prtinf("Creates a text file named FILE by launching a text editor");
+	printf("%-20s ", "run PROGRAM");
+	prtinf("Executes the named PROGRAM.\n");
+	printf("%-20s ", "type FILE");
+	prtinf("Displays the contents of the named FILE on screen.\n");
+      }
+      else
       	pid = fork();
       
       if (pid == 0) {         
@@ -102,8 +126,8 @@ int main(int argc, char *argv[]) {
 	   }
            if (strcmp(command.name, "echo") == 0)
 	     command.name = "echo"; 
-	   if (strcmp(command.name, "help") == 0)
-	     command.name = "help";              
+	   /* if (strcmp(command.name, "help") == 0)
+	      command.name = "help";*/              
            if (strcmp(command.name, "make") == 0)
 	     command.name = "nano";
            if (strcmp(command.name, "run") == 0)
@@ -163,7 +187,6 @@ int parseCommand(char *cLine, struct command_t *cmd) {
    cmd->argc = argc-1;
    cmd->name = (char *) malloc(sizeof(cmd->argv[0]));
    strcpy(cmd->name, cmd->argv[0]);
-   cmd->argv[1] = 48;
    return 1;
 }
 
