@@ -1,4 +1,4 @@
-// ACADEMIC INTEGRITY PLEDGE
+ // ACADEMIC INTEGRITY PLEDGE
 //
 // - I have not used source code obtained from another student nor
 //   any other unauthorized source, either modified or unmodified.
@@ -113,12 +113,12 @@ int main(int argc, char *argv[]) {
 	   /* Child executing command */
 	   command.argv[0] = command.name;
 
-	   int i;
+	   /* int i;
 	   for(i = 0;i < MAX_ARGS;i++) {
 	     if(command.argv[i] != NULL) {
 	       printf("Arg %d: ", i, argv[i]);
 	     }
-	   }
+	     }*/
 
 	   execvp(command.name, command.argv);
       }
@@ -163,7 +163,7 @@ int parseCommand(char *cLine, struct command_t *cmd) {
    cmd->argc = argc-1;
    cmd->name = (char *) malloc(sizeof(cmd->argv[0]));
    strcpy(cmd->name, cmd->argv[0]);
-   cmd->argv[1] = NULL;
+   cmd->argv[1] = 48;
    return 1;
 }
 
