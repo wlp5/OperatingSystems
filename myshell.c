@@ -91,23 +91,23 @@ int main(int argc, char *argv[]) {
 	printf("******************************************\n");
 	printf("Help Manual: Below are the list of commands supported\n");
 	printf("%-20s ", "cls");
-	prtinf("Clears the screen.\n");
+	printf("Clears the screen.\n");
 	printf("%-20s ", "copy FILE1 FILE2");
-	prtinf("Creates F2 and copies and bytes of F1 to F2 without deleting F1.\n");
+	printf("Creates F2 and copies and bytes of F1 to F2 without deleting F1.\n");
 	printf("%-20s ", "del FILE");
-	prtinf("Deletes the named FILE");
+	printf("Deletes the named FILE");
 	printf("%-20s ", "dir");
-	prtinf("Lists the contents of the current directory.\n");
+	printf("Lists the contents of the current directory.\n");
 	printf("%-20s ", "echo COMMENT");
-	prtinf("Echoes the COMMENT back onto the screen.\n");
+	printf("Echoes the COMMENT back onto the screen.\n");
 	printf("%-20s ", "exit");
-	prtinf("Quits the shell.\n");
+	printf("Quits the shell.\n");
 	printf("%-20s ", "make FILE");
-	prtinf("Creates a text file named FILE by launching a text editor");
+	printf("Creates a text file named FILE by launching a text editor");
 	printf("%-20s ", "run PROGRAM");
-	prtinf("Executes the named PROGRAM.\n");
+	printf("Executes the named PROGRAM.\n");
 	printf("%-20s ", "type FILE");
-	prtinf("Displays the contents of the named FILE on screen.\n");
+	printf("Displays the contents of the named FILE on screen.\n");
       }
       else
       	pid = fork();
@@ -115,25 +115,31 @@ int main(int argc, char *argv[]) {
       if (pid == 0) {         
            if (strcmp(command.name, "cls") == 0)
 	     command.name = "clear";
-           if (strcmp(command.name, "copy") == 0)
+           else if (strcmp(command.name, "copy") == 0)
 	     command.name = "cp";
-           if (strcmp(command.name, "del") == 0)
+           else if (strcmp(command.name, "del") == 0)
 	     command.name = "rm";
-           if (strcmp(command.name, "dir") == 0) {
+           else if (strcmp(command.name, "dir") == 0) {
 	     execvp("pwd", command.argv);
 	     command.argv[0] = "-l";   
 	     execvp("ls", command.argv);
 	   }
-           if (strcmp(command.name, "echo") == 0)
+           else if (strcmp(command.name, "echo") == 0)
 	     command.name = "echo"; 
 	   /* if (strcmp(command.name, "help") == 0)
 	      command.name = "help";*/              
-           if (strcmp(command.name, "make") == 0)
+           else if (strcmp(command.name, "make") == 0)
 	     command.name = "nano";
-           if (strcmp(command.name, "run") == 0)
+           else if (strcmp(command.name, "run") == 0)
 	     command.name = command.argv[1];
-           if (strcmp(command.name, "type") == 0)
+           else if (strcmp(command.name, "type") == 0)
 	     command.name = "more";
+	   else{
+	     printf("Command not recognized!\n");
+	     printf("Please type 'help' for list of commands.\n");
+	   }
+
+
 	   /* Child executing command */
 	   command.argv[0] = command.name;
 
