@@ -113,6 +113,8 @@ int main(int argc, char *argv[]) {
       else
       	pid = fork();
       
+      /*changed to an else if tree to add the catch all
+	at the end for giving user help command*/
       if (pid == 0) {         
            if (strcmp(command.name, "cls") == 0)
 	     command.name = "clear";
@@ -126,6 +128,7 @@ int main(int argc, char *argv[]) {
 		current directory or else it wont list
 		the contents of the directory*/
 	     lpid = fork();
+	     /*displays the current directory*/
 	     if(lpid == 0)
 	       execvp("pwd", command.argv);
 	     wait(&lpid);
@@ -137,9 +140,7 @@ int main(int argc, char *argv[]) {
 	   }
            else if (strcmp(command.name, "echo") == 0)
 	     command.name = "echo"; 
-	   /* if (strcmp(command.name, "help") == 0)
-	      command.name = "help";*/              
-           else if (strcmp(command.name, "make") == 0)
+	   else if (strcmp(command.name, "make") == 0)
 	     command.name = "nano";
            else if (strcmp(command.name, "run") == 0)
 	     command.name = command.argv[1];
@@ -153,13 +154,6 @@ int main(int argc, char *argv[]) {
 
 	   /* Child executing command */
 	   command.argv[0] = command.name;
-
-	   /* int i;
-	   for(i = 0;i < MAX_ARGS;i++) {
-	     if(command.argv[i] != NULL) {
-	       printf("Arg %d: ", i, argv[i]);
-	     }
-	     }*/
 
 	   execvp(command.name, command.argv);
       }
