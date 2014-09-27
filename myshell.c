@@ -1,4 +1,4 @@
- // ACADEMIC INTEGRITY PLEDGE
+// ACADEMIC INTEGRITY PLEDGE
 //
 // - I have not used source code obtained from another student nor
 //   any other unauthorized source, either modified or unmodified.
@@ -122,12 +122,17 @@ int main(int argc, char *argv[]) {
 	     command.name = "rm";
            else if (strcmp(command.name, "dir") == 0) {
 	     printf("\n");
+	     /* need to create a child to display the
+		current directory or else it wont list
+		the contents of the directory*/
 	     lpid = fork();
 	     if(lpid == 0)
 	       execvp("pwd", command.argv);
 	     wait(&lpid);
 	     printf("\n");
-	     command.argv[0] = "-l";   
+	     /*setting the command to list the contents
+	       in the long list form*/
+	     command.argv[1]= "-l";
 	     execvp("ls", command.argv);
 	   }
            else if (strcmp(command.name, "echo") == 0)
