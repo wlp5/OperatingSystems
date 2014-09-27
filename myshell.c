@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
    int i;
    int exit;
    int pid;
+   int lpid;
    int status;
    char cmdLine[MAX_LINE_LEN];
   
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]) {
 	printf("%-20s ", "copy FILE1 FILE2");
 	printf("Creates F2 and copies and bytes of F1 to F2 without deleting F1.\n");
 	printf("%-20s ", "del FILE");
-	printf("Deletes the named FILE");
+	printf("Deletes the named FILE.\n");
 	printf("%-20s ", "dir");
 	printf("Lists the contents of the current directory.\n");
 	printf("%-20s ", "echo COMMENT");
@@ -103,7 +104,7 @@ int main(int argc, char *argv[]) {
 	printf("%-20s ", "exit");
 	printf("Quits the shell.\n");
 	printf("%-20s ", "make FILE");
-	printf("Creates a text file named FILE by launching a text editor");
+	printf("Creates a text file named FILE by launching a text editor.\n");
 	printf("%-20s ", "run PROGRAM");
 	printf("Executes the named PROGRAM.\n");
 	printf("%-20s ", "type FILE");
@@ -120,7 +121,12 @@ int main(int argc, char *argv[]) {
            else if (strcmp(command.name, "del") == 0)
 	     command.name = "rm";
            else if (strcmp(command.name, "dir") == 0) {
-	     execvp("pwd", command.argv);
+	     printf("\n");
+	     lpid = fork();
+	     if(lpid == 0)
+	       execvp("pwd", command.argv);
+	     wait(&lpid);
+	     printf("\n");
 	     command.argv[0] = "-l";   
 	     execvp("ls", command.argv);
 	   }
