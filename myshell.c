@@ -45,6 +45,7 @@
 #define MAX_LINE_LEN	80
 #define WHITESPACE	" ,\t\n"
 
+
 struct command_t {
    char *name;
    int argc;
@@ -63,6 +64,8 @@ int main(int argc, char *argv[]) {
    int lpid;
    int status;
    char cmdLine[MAX_LINE_LEN];
+
+
   
    struct command_t command;
 
@@ -116,46 +119,51 @@ int main(int argc, char *argv[]) {
       /*changed to an else if tree to add the catch all
 	at the end for giving user help command*/
       if (pid == 0) {         
-           if (strcmp(command.name, "cls") == 0)
-	     command.name = "clear";
-           else if (strcmp(command.name, "copy") == 0)
-	     command.name = "cp";
-           else if (strcmp(command.name, "del") == 0)
-	     command.name = "rm";
-           else if (strcmp(command.name, "dir") == 0) {
-	     printf("\n");
-	     /* need to create a child to display the
-		current directory or else it wont list
-		the contents of the directory*/
-	     lpid = fork();
-	     /*displays the current directory*/
-	     if(lpid == 0)
-	       execvp("pwd", command.argv);
-	     wait(&lpid);
-	     printf("\n");
-	     /*setting the command to list the contents
-	       in the long list form*/
-	     command.argv[1]= "-l";
-	     execvp("ls", command.argv);
-	   }
-           else if (strcmp(command.name, "echo") == 0)
-	     command.name = "echo"; 
-	   else if (strcmp(command.name, "make") == 0)
-	     command.name = "nano";
-           else if (strcmp(command.name, "run") == 0)
-	     command.name = command.argv[1];
-           else if (strcmp(command.name, "type") == 0)
-	     command.name = "more";
-	   else{
-	     printf("Command not recognized!\n");
-	     printf("Please type 'help' for list of commands.\n");
-	   }
+	
+	/*setting the enviroment*/
+	setenv("TERM", "xterm", 0);
+	
+	if (strcmp(command.name, "cls") == 0)
+	  command.name = "clear";
+	else if (strcmp(command.name, "copy") == 0)
+	  command.name = "cp";
+	else if (strcmp(command.name, "del") == 0)
+	  command.name = "rm";
+	else if (strcmp(command.name, "dir") == 0) {
+	  printf("\n");
+	  /* need to create a child to display the
+	     current directory or else it wont list
+	     the contents of the directory*/
+	  lpid = fork();
+	  /*displays the current directory*/
+	  if(lpid == 0)
+	    execvp("pwd", command.argv);
+	  wait(&lpid);
+	  printf("\n");
+	  /*setting the command to list the contents
+	    in the long list form*/
+	  command.argv[1]= "-l";
+	  execvp("ls", command.argv);
+	}
+	else if (strcmp(command.name, "echo") == 0)
+	  command.name = "echo"; 
+	else if (strcmp(command.name, "make") == 0)
+	  command.name = "nano";
+	else if (strcmp(command.name, "run") == 0)
+	  command.name = command.argv[1];
+	else if (strcmp(command.name, "type") == 0)
+	  command.name = "more";
+	else{
+	  printf("Command not recognized!\n");
+	  printf("Please type 'help' for list of commands.\n");
+	}
+	
+	
+	/* Child executing command */
+	command.argv[0] = command.name;
+	
 
-
-	   /* Child executing command */
-	   command.argv[0] = command.name;
-
-	   execvp(command.name, command.argv);
+	execvp(command.name, command.argv);
       }
       /* Wait for the child to terminate */
       /* printf("%i ", pid);*/
