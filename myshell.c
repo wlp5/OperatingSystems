@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
       if (pid == 0) {         
 	
 	/*setting the enviroment*/
-	setenv("TERM", "xterm", 0);
+	setenv("TERM", "linux", 0);
 	
 	if (strcmp(command.name, "cls") == 0)
 	  command.name = "clear";
