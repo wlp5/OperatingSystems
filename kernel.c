@@ -4,6 +4,10 @@ int mod(int, int);
 int div(int, int);
 void writeInt(int);
 void readInt(int*);
+/*Begin edits DCC 20140929*/
+void readSector(char*, int);
+void readFile(char*, char*, int);
+/*End edits DCC 20140929*/
 void handleInterrupt21(int,int,int,int);
 
 void main()
@@ -11,9 +15,21 @@ void main()
   char line[80];
   int x;
 
-
+/*Begin edits DCC 20140929*/
+  /* PART A */
+  char buffer[512];
   makeInterrupt21();
-  interrupt(33,0,"Hello world\r\n\0",0,0);
+  interrupt(33,2,&buffer,30,0);
+  interrupt(33,2,buffer,0,0);
+ 
+  /* PART B */
+  /*char buffer[13312];
+  int size;
+  makeInterrupt21();
+  interrupt(33,3,"msg\0",buffer,&size);
+  interrupt(33,0,buffer,0,0);
+  while(1); */ 
+  /*interrupt(33,0,"Hello world\r\n\0",0,0);
   interrupt(33,0,"\r\n\0",0,0);
   interrupt(33,0,"Enter a line: \0",0,0);
   interrupt(33,1,line,0,0);
@@ -25,6 +41,8 @@ void main()
   interrupt(33,0,"You entered \0",0,0);
   interrupt(33,14,x,0,0);
   interrupt(33,0,"\r\n\0",0,0);
+  */
+/*End edits DCC 20140929*/  
   /*
   writeInt(0);
   printString("Enter a line: \0");
@@ -129,10 +147,95 @@ void readInt(int* x)
   printString("\r\n\0");
 }
 
+/*Begin edits DCC 20140929*/
+void readSector(char* buffer, int sector)
+{
+   /*Begin edits TTH 10/17/14 */  
+   int ah;     /*read a sector (2 for read, 3 for write)*/
+   int al;     /*number of sectors to read*/
+   int ch;         /*track number*/
+   int cl;         /*relative sector number*/
+   int dh;         /*head number*/
+   int dl;     /*device number (for floppy, 0)*/
+   int ax;
+   int cx;
+   int dx;
+
+   ah = 2;
+   al = 1;
+   dl = 0;
+  
+   /* End edits TTH 10/17/14*/
+ 
+   /*sector passed is absolute
+   interrupt requires relative
+   conversion for floppy disk below
+   */
+   cl = (mod(sector, 18) + 1);
+   dh = mod(div(sector, 18), 2);
+   ch = div(sector, 36);
+   
+   /*derive interrupt values*/
+   ax = (ah*256) + al;
+   cx = (ch*256) + cl;
+   dx = (dh*256) + dl;
+   
+   /*call interrupt*/
+   interrupt(19, ax, buffer, cx, dx);
+   /*TODO: See if needed to print out to display*/
+   interrupt(33, 0, buffer, 0, 0);
+}
+void readFile(char* fname, char* buffer, int* size) 
+{ 
+  /* Begin edits TTH 10/17/14*/
+   int isFound;
+   int isMatch;
+   int sectorNo;
+   int numSectors;
+   int i; int j;
+
+   isFound = 0;
+   i = 0;
+   /* End edits TTH 10/17/14 */
+   /*Load directory sector into 512-byte char array*/
+   /*Disk directory sits at sector 2*/
+   readSector(buffer, 2);
+   /*Try to match file name. If not found, return*/
+   while (!isFound)
+   {
+      isMatch; j = 0;
+      while (j < 6)
+      {
+         if (fname[j] != buffer[j+(32*i)]) !isMatch;
+         j = j+1;
+      }
+      if (isMatch) isFound;
+      i = i+1;
+   }
+   if (!isFound) return;
+   /*Using sector numbers in directory, load file, sector by sector, into buffer*/
+   i=(i-1)+6;
+   numSectors = 0;
+   while (fname[i] != '0') {
+      sectorNo = fname[i] - '0';
+      readSector(buffer, sectorNo);
+      /*TODO resize buffer (add 512 to buffer address)*/
+      /*Write sector count back*/
+      *size = *size + 1;
+   }
+   
+}
+
+/*End edits DCC 20140929*/
+
 void handleInterrupt21(int ax, int bx, int cx, int dx)
 {
   switch(ax){
   case 0: printString(bx); break;
+  /*Begin edits DCC 20140929*/
+  case 2: readSector(bx, cx); break;
+  case 3: readFile(bx, cx, dx); break;
+  /*End edits DCC 20140929*/
   case 1: readString(bx); break;
   case 14: writeInt(bx); break;
   case 15: readInt(bx); break;
