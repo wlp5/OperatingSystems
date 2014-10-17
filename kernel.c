@@ -16,19 +16,19 @@ void main()
   int x;
 
 /*Begin edits DCC 20140929*/
-  /* PART A */
+  /* PART A 
   char buffer[512];
   makeInterrupt21();
   interrupt(33,2,&buffer,30,0);
   interrupt(33,2,buffer,0,0);
- 
+  */
   /* PART B */
-  /*char buffer[13312];
+  char buffer[13312];
   int size;
   makeInterrupt21();
   interrupt(33,3,"msg\0",buffer,&size);
   interrupt(33,0,buffer,0,0);
-  while(1); */ 
+  while(1);  
   /*interrupt(33,0,"Hello world\r\n\0",0,0);
   interrupt(33,0,"\r\n\0",0,0);
   interrupt(33,0,"Enter a line: \0",0,0);
@@ -220,6 +220,7 @@ void readFile(char* fname, char* buffer, int* size)
       sectorNo = fname[i] - '0';
       readSector(buffer, sectorNo);
       /*TODO resize buffer (add 512 to buffer address)*/
+      &buffer = &buffer + 512;
       /*Write sector count back*/
       *size = *size + 1;
    }
