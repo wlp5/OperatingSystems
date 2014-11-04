@@ -28,7 +28,7 @@ void main()
   makeInterrupt21();
   interrupt(33,3,"msg\0",buffer,&size);
   interrupt(33,0,buffer,0,0);
-  while(1);  
+  //while(1);  
   /*interrupt(33,0,"Hello world\r\n\0",0,0);
   interrupt(33,0,"\r\n\0",0,0);
   interrupt(33,0,"Enter a line: \0",0,0);
@@ -131,7 +131,7 @@ void writeInt(int x)
     }
   d++;
   printString(d);
-}
+} 
 
 void readInt(int* x)
 {
@@ -148,7 +148,7 @@ void readInt(int* x)
 }
 
 /*Begin edits DCC 20140929*/
-void readSector(char* buffer, int sector)
+void readSector(char* dir, int sector)
 {
    /*Begin edits TTH 10/17/14 */  
    int ah;     /*read a sector (2 for read, 3 for write)*/
@@ -181,9 +181,7 @@ void readSector(char* buffer, int sector)
    dx = (dh*256) + dl;
    
    /*call interrupt*/
-   interrupt(19, ax, buffer, cx, dx);
-   /*TODO: See if needed to print out to display*/
-   interrupt(33, 0, buffer, 0, 0);
+   interrupt(19, ax, dir, cx, dx);
 }
 void readFile(char* fname, char* buffer, int* size) 
 { 
@@ -191,38 +189,46 @@ void readFile(char* fname, char* buffer, int* size)
    int isFound;
    int isMatch;
    int sectorNo;
-   int numSectors;
    int i; int j;
+   char dir[512];
 
    isFound = 0;
    i = 0;
    /* End edits TTH 10/17/14 */
    /*Load directory sector into 512-byte char array*/
    /*Disk directory sits at sector 2*/
-   readSector(buffer, 2);
+   readSector(dir, 2);
    /*Try to match file name. If not found, return*/
-   while (!isFound)
+   /*interrupt(33,0,dir,0,0);*/
+   /*interrupt(33,0,fname,0,0);*/
+   while (isFound == 0)
    {
-      isMatch; j = 0;
+      isMatch = 1; j = 0; // was semi
       while (j < 6)
       {
-         if (fname[j] != buffer[j+(32*i)]) !isMatch;
+         if (fname[j] != dir[j+(32*i)]) isMatch = 0;
          j = j+1;
       }
-      if (isMatch) isFound;
+      if (isMatch == 1) isFound = 1;
       i = i+1;
    }
-   if (!isFound) return;
+   /*interrupt(33,0,"I'm out of here\0",0,0);*/
+   if (isFound == 0) return;
+   /*interrupt(33,0,"pass\0",0,0);*/
    /*Using sector numbers in directory, load file, sector by sector, into buffer*/
-   i=(i-1)+6;
-   numSectors = 0;
-   while (fname[i] != '0') {
-      sectorNo = fname[i] - '0';
+   i=(i-1);/*+6;
+   i = 3;*/
+   j = 6;
+   while ((dir[(i*32)+j]) != 0) {
+      /*interrupt(33,0,"ML\0",0,0);*/
+      sectorNo = dir[(i*32)+j];
       readSector(buffer, sectorNo);
       /*TODO resize buffer (add 512 to buffer address)*/
-      &buffer = &buffer + 512;
+      buffer = buffer + 512;
       /*Write sector count back*/
       *size = *size + 1;
+      //writeInt(*size);
+      j = j+1;
    }
    
 }
